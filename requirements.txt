@@ -11,4 +11,3 @@ pytz
 aiohttp
 cfonts
 flask
-protobuf
