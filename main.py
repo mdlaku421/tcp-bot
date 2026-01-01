@@ -668,11 +668,11 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
                                         except:
                                             pass
                                         
-                                        # Step 2: Send emotes to all UIDs
+                                        # Step 2: Send emotes to all UIDs (API Based)
                                         success_count = 0
                                         for target_uid in uids:
                                             try:
-                                                ok = send_emote(target_uid, emote_id, team_code, region)
+                                                send_emote(target_uid, emote_id, team_code, )
                                                 if ok:
                                                      success_count += 1
                                                    await asyncio.sleep(0.25)
