@@ -1,4 +1,4 @@
-from .DEcwHisPErMsg_pb2 import *
+from .DEcwHisPErMsG_pb2 import *
 from .MajoRLoGinrEq_pb2 import *
 from .MajoRLoGinrEs_pb2 import *
 from .PorTs_pb2 import *
