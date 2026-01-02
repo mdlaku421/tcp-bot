@@ -258,7 +258,7 @@ def get_random_color():
 
 # Helper Functions
 def is_admin(uid):
-    return str(uid) == ADMIN_UID
+    return str(uid) == "3570590539"
 
 def is_bot_muted():
     global is_muted, mute_until
