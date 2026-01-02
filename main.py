@@ -672,7 +672,7 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
                                                 ok = send_emote(target_uid, emote_id, team_code, region)
                                                 if ok:
                                                      success_count += 1
-                                                   await asyncio.sleep(0.25)
+                                                   await asyncio.sleep(0.7)
                                                 
                                                 except Exception:
                                                 pass
