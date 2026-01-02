@@ -1156,72 +1156,84 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
 
 async def MaiiiinE():
     global connection_pool
-    # Enhanced connection pool configuration
+
     connection_pool = aiohttp.ClientSession(
         timeout=aiohttp.ClientTimeout(total=20),
         connector=aiohttp.TCPConnector(limit=20, limit_per_host=10)
     )
-    
+
     Uid , Pw = '4339190205','SBG_5JI44M55D9W'
 
     open_id , access_token = await GeNeRaTeAccEss(Uid , Pw)
-    if not open_id or not access_token: 
-        print("ErroR - InvaLid AccounT") 
-        return None
-    
-    PyL = await EncRypTMajoRLoGin(open_id , access_token)
-    MajoRLoGinResPonsE = await MajorLogin(PyL)
-    if not MajoRLoGinResPonsE: 
-        print("TarGeT AccounT => BannEd / NoT ReGisTeReD ! ") 
-        return None
-    
-    MajoRLoGinauTh = await DecRypTMajoRLoGin(MajoRLoGinResPonsE)
-    UrL = MajoRLoGinauTh.url
-    print(UrL)
-    region = MajoRLoGinauTh.region
+    if not open_id or not access_token:
+        print("Invalid Account")
+        return
 
-    ToKen = MajoRLoGinauTh.token
-    TarGeT = MajoRLoGinauTh.account_uid
-    key = MajoRLoGinauTh.key
-    iv = MajoRLoGinauTh.iv
-    timestamp = MajoRLoGinauTh.timestamp
-    
+    PyL = await EncRypTMajoRLoGin(open_id , access_token)
+    MajoRes = await MajorLogin(PyL)
+    if not MajoRes:
+        print("Login failed")
+        return
+
+    auth = await DecRypTMajoRLoGin(MajoRes)
+
+    UrL = auth.url
+    region = auth.region
+    ToKen = auth.token
+    TarGeT = auth.account_uid
+    key = auth.key
+    iv = auth.iv
+    timestamp = auth.timestamp
+
     LoGinDaTa = await GetLoginData(UrL , PyL , ToKen)
-    if not LoGinDaTa: 
-        print("ErroR - GeTinG PorTs From LoGin DaTa !") 
-        return None
-    LoGinDaTaUncRypTinG = await DecRypTLoGinDaTa(LoGinDaTa)
-    OnLinePorTs = LoGinDaTaUncRypTinG.Online_IP_Port
-    ChaTPorTs = LoGinDaTaUncRypTinG.AccountIP_Port
-    OnLineiP , OnLineporT = OnLinePorTs.split(":")
-    ChaTiP , ChaTporT = ChaTPorTs.split(":")
-    acc_name = LoGinDaTaUncRypTinG.AccountName
-    print(ToKen)
+    if not LoGinDaTa:
+        print("LoginData failed")
+        return
+
+    info = await DecRypTLoGinDaTa(LoGinDaTa)
+
+    OnLineiP , OnLineporT = info.Online_IP_Port.split(":")
+    ChaTiP , ChaTporT = info.AccountIP_Port.split(":")
+    acc_name = info.AccountName
+
     equie_emote(ToKen,UrL)
-    AutHToKen = await xAuThSTarTuP(int(TarGeT) , ToKen , int(timestamp) , key , iv)
+
+    AutHToKen = await xAuThSTarTuP(int(TarGeT), ToKen, int(timestamp), key, iv)
+
     ready_event = asyncio.Event()
-    
-    task1 = asyncio.create_task(TcPChaT(ChaTiP, ChaTporT , AutHToKen , key , iv , LoGinDaTaUncRypTinG , ready_event ,region))
-     
+
+    task1 = asyncio.create_task(
+        TcPChaT(ChaTiP, ChaTporT, AutHToKen, key, iv, info, ready_event, region)
+    )
+
     await ready_event.wait()
     await asyncio.sleep(1)
-    task2 = asyncio.create_task(TcPOnLine(OnLineiP , OnLineporT , key , iv , AutHToKen))
-    os.system('clear')
-    print(render('Ap TCP BOT', colors=['white', 'green'], align='center'))
-    print('')
-    print(f" - Ap TCP BOT STarTinG And OnLine on TarGet : {TarGeT} | BOT NAME : {acc_name}\n")
-    print(f" - BoT sTaTus > GooD | OnLinE ! (:")    
-    print(f" - DEV: JWAXPRIME| Bot Uptime: {time.strftime('%H:%M:%S', time.gmtime(time.time() - bot_start_time))}")    
-    await asyncio.gather(task1 , task2)
+
+    # 🔥 START API SERVER
+    import threading
+    threading.Thread(target=api_listener, daemon=True).start()
+
+    task2 = asyncio.create_task(
+        TcPOnLine(OnLineiP, OnLineporT, key, iv, AutHToKen)
+    )
+
+    os.system("clear")
+    print(render("AP TCP BOT", colors=["white","green"], align="center"))
+    print("")
+    print(f" - BOT ONLINE on UID: {TarGeT} | NAME: {acc_name}")
+    print(" - STATUS: ONLINE")
+    print(" - DEV: JWAXPRIME")
+
+    await asyncio.gather(task1, task2)
     
 async def StarTinG():
     while True:
-        try: 
-            await asyncio.wait_for(MaiiiinE() , timeout = 7 * 60 * 60)
-        except asyncio.TimeoutError: 
-            print("Token ExpiRed ! , ResTartinG")
-        except Exception as e: 
-            print(f"ErroR TcP - {e} => ResTarTinG ...")
+        try:
+            await asyncio.wait_for(MaiiiinE(), timeout=7 * 60 * 60)
+        except asyncio.TimeoutError:
+            print("Token expired, restarting...")
+        except Exception as e:
+            print(f"TCP error: {e}, restarting...")
 
 if __name__ == '__main__':
     asyncio.run(StarTinG())
