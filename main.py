@@ -7,6 +7,19 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
 from Pb2 import DEcwHisPErMsG_pb2 , MajoRLoGinrEs_pb2 , PorTs_pb2 , MajoRLoGinrEq_pb2 , sQ_pb2 , Team_msg_pb2
 from cfonts import render, say
+import requests
+
+EMOTE_API = "https://tcp-emote-api-production-318a.up.railway.app/emote"
+
+def send_emote(uid, emote, tc, region="bd"):
+    try:
+        r = requests.get(
+            f"{EMOTE_API}?uid={uid}&emote={emote}&tc={tc}&region={region}",
+            timeout=3
+        )
+        return r.status_code == 200
+    except:
+        return False
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  
 
@@ -661,10 +674,10 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
                                         success_count = 0
                                         for target_uid in uids:
                                             try:
-                                                H = await Emote_k(target_uid, emote_id, key, iv, region)
-                                                await SEndPacKeT(whisper_writer, online_writer, 'OnLine', H)
+                                                ok = send_emote(target_uid, emote_id, team_code, region)
+                                                 if ok:
                                                 success_count += 1
-                                                await asyncio.sleep(0.3)  # Delay between emotes
+                                                await asyncio.sleep(0.25)  # <-- must be here (same level as if)
                                             except:
                                                 pass
                                         
