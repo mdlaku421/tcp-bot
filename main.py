@@ -482,42 +482,39 @@ async def SEndPacKeT(OnLinE , ChaT , TypE , PacKeT):
         return 'UnsoPorTed TypE ! >> ErrrroR (:():)' 
            
 
-async def TcPOnLine(ip, port, key, iv, AutHToKen, reconnect_delay=0.5):
-    global online_writer , spam_room , whisper_writer , spammer_uid , spam_chat_id , spam_uid , XX , uid , Spy,data2, Chat_Leave
+async def TcPOnLine(ip, port, key, iv, AutHToKen, reconnect_delay=1):
+    global online_writer
     while True:
         try:
-            reader , writer = await asyncio.open_connection(ip, int(port))
+            reader, writer = await asyncio.open_connection(ip, int(port))
             online_writer = writer
-            bytes_payload = bytes.fromhex(AutHToKen)
-            online_writer.write(bytes_payload)
-            await online_writer.drain()
+            writer.write(bytes.fromhex(AutHToKen))
+            await writer.drain()
             while True:
-                data2 = await reader.read(9999)
-                if not data2: 
+                data = await
+            reader.read(9999)
+                if not data:
                     break
                 
-                if data2.hex().startswith('0500') and len(data2.hex()) > 1000:
+                if data.hex().startswith('0500') and len(data.hex()) > 1000:
                     try:
-                        packet = await DeCode_PackEt(data2.hex()[10:])
+                        packet = await DeCode_PackEt(data.hex()[10:])
                         packet = json.loads(packet)
-                        OwNer_UiD , CHaT_CoDe , SQuAD_CoDe = await GeTSQDaTa(packet)
+                        OwNer_UiD, CHaT_CoDe, SQuAD_CoDe = await GeTSQDaTa(packet)
 
-                        JoinCHaT = await AutH_Chat(3 , OwNer_UiD , CHaT_CoDe, key,iv)
-                        await SEndPacKeT(whisper_writer , online_writer , 'ChaT' , JoinCHaT)
-
-                        message = f'[B][C]{get_random_color()}\n🎯 AP TCP BOT Online!\n{B}[C][00FF00]Commands: Use /help'
-                        P = await SEndMsG(0 , message , OwNer_UiD , OwNer_UiD , key , iv)
-                        await SEndPacKeT(whisper_writer , online_writer , 'ChaT' , P)
-
+                        JoinCHaT = await AutH_Chat(3, OwNer_UiD, CHaT_CoDe, key, iv)
+                        await SEndPacKeT(whisper_writer, online_writer, 'ChaT', JoinCHaT)
+                        except:
+                            pass
                     except Exception as e:
-                        pass
+            print("TCP Online error:", e)
+          try:
+            if online_writer:
+                online_writer.close()
+                await online_writer.wait_closed()
+                except:
+                    pass
 
-            online_writer.close() 
-            await online_writer.wait_closed() 
-            online_writer = None
-
-        except Exception as e: 
-            print(f"- ErroR With {ip}:{port} - {e}") 
             online_writer = None
         await asyncio.sleep(reconnect_delay)
 
