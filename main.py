@@ -11,8 +11,8 @@ from cfonts import render, say
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  
 
 # Enhanced Configuration Variables
-ADMIN_UID = "6806326497"
-server2 = "IND"
+ADMIN_UID = "3570590539"
+server2 = "BD"
 key2 = "JWAXPRIME"
 BYPASS_TOKEN = "your_bypass_token_here"
 
